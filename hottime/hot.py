@@ -95,7 +95,7 @@ class Crawl_WeiBo_SINA:
                     read_numbers = num * 100000000
             if task_numbers:
                 task_numbers = ''.join(task_numbers)
-                num = re.findall("\d+\.\d+", task_numbers)
+                num = re.findall("\d+\.?\d+", task_numbers)
                 if num:
                     num = float(''.join(num))
                 else:
@@ -104,6 +104,8 @@ class Crawl_WeiBo_SINA:
                     task_numbers = num * 10000
                 elif "亿" in task_numbers:
                     task_numbers = num * 100000000
+                else:
+                    task_numbers = num
             if desc_url:
                 desc_url = ''.join(desc_url)
 
@@ -111,8 +113,8 @@ class Crawl_WeiBo_SINA:
                 "title": topic_header[0] if topic_header else "",
                 "summary": summary,
                 "huati_zhuchiren": huati_zhuchiren,
-                "read_numbers": read_numbers,
-                "task_numbers": task_numbers,
+                "read_numbers": int(read_numbers),
+                "task_numbers": int(task_numbers),
                 "desc_url": desc_url
             }
             return hot_info
@@ -145,7 +147,7 @@ def main():
             data = sina.new_parse(new_html)
             datas.append(data)
         except Exception as e:
-            print('new', e)
+            print('new', e, new)
             continue
     write_csv(datas, './sina_hot.csv')
     print("==== Done ====")
